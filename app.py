@@ -8,7 +8,10 @@ import re
 from pathlib import Path
 from datetime import datetime
 import streamlit as st
+import os
+from typing import Optional
 
+from storage.storage_supabase import SupabaseConfig, SupabaseStorage, SupabaseError
 # ---------------------------
 # Configuration
 # ---------------------------
@@ -164,12 +167,38 @@ def review_file_for_role(role: str):
 
 
 def append_review(role: str, payload: dict):
+    mode = get_storage_mode()
+    if mode == "db":
+        try:
+            db = get_supabase_storage()
+            db.insert_review(payload)
+            return
+        except Exception as e:
+            # fallback explicite (ne pas perdre l'avis)
+            st.warning(f"Échec insertion DB, fallback en fichier local. Détail: {e}")
+
+    # LOCAL fallback (dev)
     f = review_file_for_role(role)
     with f.open("a", encoding="utf-8") as w:
         w.write(json.dumps(payload, ensure_ascii=False) + "\n")
 
 
-def count_reviews(role: str):
+def count_reviews(role: str) -> int:
+    mode = get_storage_mode()
+    if mode == "db":
+        if not allow_db_select():
+            return 0  # ou -1 si tu veux afficher '—'
+        try:
+            db = get_supabase_storage()
+            return db.count_reviews(reviewer_role=role)
+        except SupabaseError as e:
+            st.warning(f"Count DB impossible: {e}")
+            return 0
+        except Exception as e:
+            st.warning(f"Count DB erreur: {e}")
+            return 0
+
+    # LOCAL
     f = review_file_for_role(role)
     if not f.exists():
         return 0
@@ -188,6 +217,31 @@ def summarize_rules(rules):
         act = dec.get("action", "")
         out.append(f"- {rid} | priority={pr} | {pl} | action={act}")
     return "\n".join(out) if out else "—"
+
+def get_storage_mode() -> str:
+    # priorité: secrets streamlit > env > default local
+    try:
+        return st.secrets.get("STORAGE_MODE", os.environ.get("STORAGE_MODE", "local"))
+    except Exception:
+        return os.environ.get("STORAGE_MODE", "local") or "local"
+
+
+def get_supabase_storage() -> SupabaseStorage:
+    url = st.secrets.get("SUPABASE_URL", "https://ajfdmhvpuyuofzxuecmt.supabase.co")
+    key = st.secrets.get("SUPABASE_KEY", "sb_publishable_xxIEYxYYfAR9r59F0aF7pw_9y5cS6ZA")
+    table = st.secrets.get("SUPABASE_TABLE", "reviews")
+    if not url or not key:
+        raise RuntimeError("Supabase non configuré: SUPABASE_URL / SUPABASE_KEY manquants dans secrets.")
+    return SupabaseStorage(SupabaseConfig(url=url, anon_key=key, table=table))
+
+
+def allow_db_select() -> bool:
+    # permet d'éviter des erreurs si tu es en RLS INSERT-only
+    try:
+        v = st.secrets.get("ALLOW_DB_SELECT", "false")
+    except Exception:
+        v = os.environ.get("ALLOW_DB_SELECT", "false")
+    return str(v).strip().lower() in ("1", "true", "yes", "y")
 
 
 # ---------------------------
