@@ -68,7 +68,7 @@ def normalize_chapter(chapter_raw: str):
 
     chap_id = int(m.group(1))
     title = CHAPTER_TITLES.get(chap_id, "")
-    chap_label = f"Pathologie {chap_id} - {title}" if title else f"Chapitre {chap_id}"
+    chap_label = f"Chapitre {chap_id} — {title}" if title else f"Chapitre {chap_id}"
     return chap_id, chap_label
 
 
@@ -184,15 +184,19 @@ def append_review(role: str, payload: dict):
 
 
 def count_reviews(role: str) -> int:
+    """Compte les avis enregistrés pour un rôle.
+
+    - En mode 'db': compte dans Supabase (si SELECT autorisé par RLS / policies)
+    - En mode 'local': compte les lignes JSONL locales
+    """
     mode = get_storage_mode()
     if mode == "db":
-        if not allow_db_select():
-            return 0  # ou -1 si tu veux afficher '—'
         try:
             db = get_supabase_storage()
             return db.count_reviews(reviewer_role=role)
         except SupabaseError as e:
-            st.warning(f"Count DB impossible: {e}")
+            # Si les policies bloquent SELECT, on ne casse pas l'app; on affiche 0 + warning.
+            st.warning(f"Count DB impossible (vérifie RLS/policies SELECT): {e}")
             return 0
         except Exception as e:
             st.warning(f"Count DB erreur: {e}")
@@ -227,12 +231,33 @@ def get_storage_mode() -> str:
 
 
 def get_supabase_storage() -> SupabaseStorage:
-    url = st.secrets.get("SUPABASE_URL", "https://ajfdmhvpuyuofzxuecmt.supabase.co")
-    key = st.secrets.get("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqZmRtaHZwdXl1b2Z6eHVlY210Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTIwMTQsImV4cCI6MjA4NTI2ODAxNH0.nUeoOEyWL-b2Fuc6eUQWVYR79fE6kLqOvIIosaNJjOI")
-    table = st.secrets.get("SUPABASE_TABLE", "reviews")
+    """Initialise le client Supabase (REST) à partir des secrets/env.
+
+    Requis:
+      - SUPABASE_URL
+      - SUPABASE_KEY (Anon key)  [ou SUPABASE_ANON_KEY]
+    Optionnel:
+      - SUPABASE_TABLE (défaut: reviews)
+    """
+    try:
+        url = st.secrets.get("SUPABASE_URL") or os.environ.get("SUPABASE_URL")
+        key = (
+            st.secrets.get("SUPABASE_KEY")
+            or st.secrets.get("SUPABASE_ANON_KEY")
+            or os.environ.get("SUPABASE_KEY")
+            or os.environ.get("SUPABASE_ANON_KEY")
+        )
+        table = st.secrets.get("SUPABASE_TABLE") or os.environ.get("SUPABASE_TABLE") or "reviews"
+    except Exception:
+        url = os.environ.get("SUPABASE_URL")
+        key = os.environ.get("SUPABASE_KEY") or os.environ.get("SUPABASE_ANON_KEY")
+        table = os.environ.get("SUPABASE_TABLE") or "reviews"
+
     if not url or not key:
-        raise RuntimeError("Supabase non configuré: SUPABASE_URL / SUPABASE_KEY manquants dans secrets.")
+        raise RuntimeError("Supabase non configuré: renseigne SUPABASE_URL et SUPABASE_KEY (Anon key) dans secrets/env.")
+
     return SupabaseStorage(SupabaseConfig(url=url, anon_key=key, table=table))
+
 
 
 def allow_db_select() -> bool:
@@ -275,7 +300,7 @@ except Exception as e:
 items = [it for it in items if normalize_entry_name(it.get("entry_name", ""))]
 
 chapters_map, by_chapter = build_chapter_index(items)
-chapter_options = [(cid, chapters_map[cid]) for cid in sorted(chapters_map.keys())]
+chapter_options = [(cid, chapters_map[cid]) for cid in sorted(chapters_map.keys()) if chapters_map.get(cid)]
 
 if not chapter_options:
     st.error("Aucun chapitre détecté dans le KB (champ 'chapter').")
@@ -441,6 +466,7 @@ with col_view:
                 payload = {
                     "ts": datetime.utcnow().isoformat() + "Z",
                     "role": role,
+                    "reviewer_role": role,
                     "chapter_id": selected_chap_id,
                     "chapter_label": chapters_map.get(selected_chap_id),
                     "entry_name": selected_item.get("entry_name"),
