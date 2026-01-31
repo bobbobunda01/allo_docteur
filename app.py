@@ -228,7 +228,7 @@ def get_storage_mode() -> str:
 
 def get_supabase_storage() -> SupabaseStorage:
     url = st.secrets.get("SUPABASE_URL", "https://ajfdmhvpuyuofzxuecmt.supabase.co")
-    key = st.secrets.get("SUPABASE_KEY", "sb_publishable_xxIEYxYYfAR9r59F0aF7pw_9y5cS6ZA")
+    key = st.secrets.get("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqZmRtaHZwdXl1b2Z6eHVlY210Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTIwMTQsImV4cCI6MjA4NTI2ODAxNH0.nUeoOEyWL-b2Fuc6eUQWVYR79fE6kLqOvIIosaNJjOI")
     table = st.secrets.get("SUPABASE_TABLE", "reviews")
     if not url or not key:
         raise RuntimeError("Supabase non configuré: SUPABASE_URL / SUPABASE_KEY manquants dans secrets.")
@@ -250,7 +250,7 @@ def allow_db_select() -> bool:
 st.title("Allo Docteur — Validation KB (MSF + ICD)")
 st.caption("Module de revue clinique: navigation par chapitre et entrée, validation par 2 profils médecins, export des avis en JSONL.")
 
-with st.sidebar:
+with st.sidebar:    
     st.header("Chargement KB")
     kb_path = st.text_input("Chemin du fichier KB (JSON)", value=DEFAULT_KB_PATH)
 
