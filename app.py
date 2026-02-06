@@ -15,6 +15,8 @@ from storage.storage_supabase import SupabaseStorage
 # ---------------------------
 # Configuration
 # ---------------------------
+
+##efefefefzfzefz
 st.set_page_config(
     page_title="Allo Docteur — Validation KB (MSF + ICD)",
     layout="wide",
@@ -194,7 +196,7 @@ def count_reviews(role: str) -> int:
         try:
             db = get_supabase_storage()
             return db.count_reviews(reviewer_role=role)
-        except SupabaseError as e:
+        except Exception as e:
             # Si les policies bloquent SELECT, on ne casse pas l'app; on affiche 0 + warning.
             st.warning(f"Count DB impossible (vérifie RLS/policies SELECT): {e}")
             return 0
