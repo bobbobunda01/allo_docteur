@@ -10,8 +10,8 @@ from datetime import datetime
 import streamlit as st
 import os
 from typing import Optional
-
-from storage.storage_supabase import SupabaseConfig, SupabaseStorage, SupabaseError
+from storage.storage_supabase import SupabaseStorage
+#from storage.storage_supabase import SupabaseConfig, SupabaseStorage, SupabaseError
 # ---------------------------
 # Configuration
 # ---------------------------
