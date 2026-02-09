@@ -8,14 +8,6 @@ import re
 from pathlib import Path
 from datetime import datetime
 import streamlit as st
-import os
-from typing import Optional
-
-from storage.storage_supabase import (
-    SupabaseConfig,
-    SupabaseStorage,
-    SupabaseError,
-)
 
 # ---------------------------
 # Configuration
@@ -171,90 +163,31 @@ def review_file_for_role(role: str):
     return REVIEWS_DIR / f"reviews_{slug}.jsonl"
 
 
-def append_review(role: str, payload: dict) -> dict:
-    """Stocke un avis.
-
-    Retour:
-      - ok: bool
-      - stored: 'db' | 'local'
-      - error: str | None
-    """
-    mode = get_storage_mode()
-
-    if mode == "db":
-        try:
-            db = get_supabase_storage()
-            db.insert_review(payload)
-            return {"ok": True, "stored": "db", "error": None}
-        except Exception as e:
-            # IMPORTANT: pas de fallback silencieux en cloud (sinon tu crois que c'est stocké en DB).
-            return {"ok": False, "stored": "db", "error": str(e)}
-
-    # LOCAL fallback (dev)
+def append_review(role: str, payload: dict):
     f = review_file_for_role(role)
     with f.open("a", encoding="utf-8") as w:
         w.write(json.dumps(payload, ensure_ascii=False) + "\n")
-    return {"ok": True, "stored": "local", "error": None}
 
 
-def count_reviews(role: str) -> int:
-    """Compte les avis enregistrés pour un rôle."""
-    mode = get_storage_mode()
-
-    if mode == "db":
-        try:
-            db = get_supabase_storage()
-            # On compte par reviewer_role si ta table a cette colonne.
-            return int(db.count_reviews(reviewer_role=role))
-        except Exception as e:
-            st.warning(f"Count DB impossible (vérifie SUPABASE_URL/KEY, table, RLS/policies SELECT): {e}")
-            return 0
-
-    # LOCAL
+def count_reviews(role: str):
     f = review_file_for_role(role)
     if not f.exists():
         return 0
     return sum(1 for _ in f.open("r", encoding="utf-8"))
 
 
-def get_storage_mode() -> str:
-
-    # priorité: secrets streamlit > env > default local
-    try:
-        return st.secrets.get("STORAGE_MODE", os.environ.get("STORAGE_MODE", "local"))
-    except Exception:
-        return os.environ.get("STORAGE_MODE", "local") or "local"
-
-
-def get_supabase_storage() -> SupabaseStorage:
-    # IMPORTANT: en cloud, on évite toute valeur par défaut (sinon on croit être en DB alors qu'on tape autre chose).
-    url = None
-    key = None
-    table = None
-    try:
-        url = st.secrets.get("SUPABASE_URL")
-        key = st.secrets.get("SUPABASE_KEY")
-        table = st.secrets.get("SUPABASE_TABLE", "reviews")
-    except Exception:
-        # fallback env (local)
-        url = os.environ.get("SUPABASE_URL")
-        key = os.environ.get("SUPABASE_KEY")
-        table = os.environ.get("SUPABASE_TABLE", "reviews")
-
-    if not url or not key:
-        raise RuntimeError("Supabase non configuré: SUPABASE_URL / SUPABASE_KEY manquants (secrets ou env).")
-
-    # NOTE: SUPABASE_URL doit être du type https://<project_ref>.supabase.co (sans /rest/v1)
-    return SupabaseStorage(SupabaseConfig(url=url.strip(), anon_key=key.strip(), table=table))
-
-
-def allow_db_select() -> bool:
-    # permet d'éviter des erreurs si tu es en RLS INSERT-only
-    try:
-        v = st.secrets.get("ALLOW_DB_SELECT", "false")
-    except Exception:
-        v = os.environ.get("ALLOW_DB_SELECT", "false")
-    return str(v).strip().lower() in ("1", "true", "yes", "y")
+def summarize_rules(rules):
+    out = []
+    for r in safe_list(rules):
+        if not isinstance(r, dict):
+            continue
+        rid = r.get("id", "")
+        pr = r.get("priority", "")
+        dec = r.get("decision", {}) if isinstance(r.get("decision"), dict) else {}
+        pl = dec.get("priority_level", "")
+        act = dec.get("action", "")
+        out.append(f"- {rid} | priority={pr} | {pl} | action={act}")
+    return "\n".join(out) if out else "—"
 
 
 # ---------------------------
@@ -263,15 +196,13 @@ def allow_db_select() -> bool:
 st.title("Allo Docteur — Validation KB (MSF + ICD)")
 st.caption("Module de revue clinique: navigation par chapitre et entrée, validation par 2 profils médecins, export des avis en JSONL.")
 
-with st.sidebar:    
+with st.sidebar:
     st.header("Chargement KB")
     kb_path = st.text_input("Chemin du fichier KB (JSON)", value=DEFAULT_KB_PATH)
 
     st.divider()
     st.header("Rôle du validateur")
     role = st.radio("Sélection du profil", [ROLE_GENERALISTE, ROLE_URGENTISTE])
-
-    st.caption(f"Stockage actif: **{get_storage_mode()}**")
 
     st.divider()
     st.header("Priorités (rappel)")
@@ -456,7 +387,6 @@ with col_view:
                 payload = {
                     "ts": datetime.utcnow().isoformat() + "Z",
                     "role": role,
-                    "reviewer_role": role,
                     "chapter_id": selected_chap_id,
                     "chapter_label": chapters_map.get(selected_chap_id),
                     "entry_name": selected_item.get("entry_name"),
@@ -469,17 +399,10 @@ with col_view:
                     # pointer stable vers l’item (si présent)
                     "kb_id": selected_item.get("id") or selected_item.get("kb_id") or None,
                 }
-                res = append_review(role, payload)
-                if not res.get("ok"):
-                    st.error("Échec d'enregistrement en base (Supabase).")
-                    st.code(res.get("error") or "Erreur inconnue")
-                else:
-                    where = res.get("stored")
-                    st.success(f"Avis enregistré avec succès ✅ (stocké: {where})")
-                    if where == "local":
-                        st.info(f"Fichier avis: {review_file_for_role(role).resolve()}")
-                    # Recalcule le compteur immédiatement
-                    st.rerun()
+                append_review(role, payload)
+                st.success("Avis enregistré avec succès ✅")
+
+                st.info(f"Fichier avis: {review_file_for_role(role).resolve()}")
 
 # Footer
 st.divider()
@@ -487,4 +410,3 @@ st.caption(
     "⚠️ Important: Cette application sert à la **validation du KB de triage** (orientation/priorisation), "
     "pas à produire un diagnostic. Les règles et contenus doivent être validés par des médecins avant usage en production."
 )
-        
