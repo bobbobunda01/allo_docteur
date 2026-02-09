@@ -162,11 +162,30 @@ def review_file_for_role(role: str):
     slug = "generaliste" if role == ROLE_GENERALISTE else "urgentiste"
     return REVIEWS_DIR / f"reviews_{slug}.jsonl"
 
+from storage_supabase import SupabaseStorage
 
-def append_review(role: str, payload: dict):
-    f = review_file_for_role(role)
-    with f.open("a", encoding="utf-8") as w:
-        w.write(json.dumps(payload, ensure_ascii=False) + "\n")
+def get_db():
+    return SupabaseStorage(
+        supabase_url=st.secrets["SUPABASE_URL"],
+        supabase_key=st.secrets["SUPABASE_KEY"],
+        table=st.secrets.get("SUPABASE_TABLE", "reviews"),
+    )
+
+def append_review_db(payload: dict):
+    db = get_db()
+    return db.insert_review({
+        # on met le JSON complet dans payload (compatible même si table minimale)
+        "decision": payload.get("decision"),
+        "reviewer_role": payload.get("role"),
+        "chapter_id": payload.get("chapter_id"),
+        "chapter_label": payload.get("chapter_label"),
+        "entry_name": payload.get("entry_name"),
+        "entry_type": payload.get("entry_type"),
+        "kb_id": payload.get("kb_id"),
+        "suggested_priority": payload.get("suggested_priority"),
+        "comments": payload.get("comments"),
+        "payload": payload,
+    })
 
 
 def count_reviews(role: str):
