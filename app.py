@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
-
+import pandas as pd
 import streamlit as st
 
 # Import Supabase storage (optional)
