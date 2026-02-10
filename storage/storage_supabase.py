@@ -1,113 +1,141 @@
-# storage/storage_supabase.py
-# Minimal Supabase (PostgREST) client for Streamlit KB review app.
-# Features: insert, count (optionally filtered), list (optional).
-
-from __future__ import annotations
-
+# storage_supabase.py
 import json
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
-
 import requests
+from typing import Optional, Dict, Any, List
 
 
-class SupabaseError(RuntimeError):
-    """Raised when Supabase REST calls fail (RLS, bad table, bad key, etc.)."""
-
-
-@dataclass(frozen=True)
-class SupabaseConfig:
-    url: str
-    anon_key: str
-    table: str = "reviews"
-    timeout: int = 30
+class SupabaseError(Exception):
+    pass
 
 
 class SupabaseStorage:
-    def __init__(self, config: SupabaseConfig):
-        self.url = config.url.rstrip("/")
-        self.key = config.anon_key
-        self.table = config.table
-        self.timeout = config.timeout
+    """
+    Stockage Supabase (PostgREST):
+    - insert_review(payload) : mappe le payload Streamlit vers la table 'reviews'
+    - count_reviews(reviewer_role=...) : count exact (filtrable)
+    - list_reviews(reviewer_role=..., limit=...) : optionnel
+    """
+
+    def __init__(
+        self,
+        supabase_url: str,
+        supabase_anon_key: str,
+        table: str = "reviews",
+        timeout: int = 30,
+    ):
+        self.url = supabase_url.rstrip("/")
+        self.key = supabase_anon_key
+        self.table = table
+        self.timeout = timeout
 
     def _headers(self, prefer: Optional[str] = None) -> Dict[str, str]:
         h = {
             "apikey": self.key,
             "Authorization": f"Bearer {self.key}",
             "Content-Type": "application/json",
-            "Accept": "application/json",
         }
         if prefer:
             h["Prefer"] = prefer
         return h
 
-    def _endpoint(self) -> str:
-        return f"{self.url}/rest/v1/{self.table}"
+    def _endpoint(self, path: str) -> str:
+        return f"{self.url}/rest/v1/{path.lstrip('/')}"
 
-    def insert(self, row: Dict[str, Any]) -> Dict[str, Any]:
-        """Insert one row. Returns inserted row(s) if allowed by RLS."""
+    # ---------------------------
+    # Mapping payload -> row DB
+    # ---------------------------
+    def _map_payload_to_row(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Ta table Supabase a les colonnes :
+        id, created_at, kb_version, kb_hash, reviewer_role, reviewer_name, reviewer_email,
+        chapter_id, chapter_label, entry_name, entry_type, kb_id, decision, suggested_priority,
+        suggest_additional_questions, suggest_rule_conflicts, comments, payload
+        """
+
+        # On garde le payload brut complet en JSONB dans la colonne "payload"
+        row = {
+            "kb_version": payload.get("kb_version") or "v1",
+            "kb_hash": payload.get("kb_hash") or payload.get("kb_sha256") or "unknown",
+            "reviewer_role": payload.get("role"),  # role -> reviewer_role
+            "reviewer_name": payload.get("reviewer_name"),
+            "reviewer_email": payload.get("reviewer_email"),
+            "chapter_id": payload.get("chapter_id"),
+            "chapter_label": payload.get("chapter_label"),
+            "entry_name": payload.get("entry_name"),
+            "entry_type": payload.get("entry_type"),
+            "kb_id": payload.get("kb_id"),
+            "decision": payload.get("decision"),
+            "suggested_priority": payload.get("suggested_priority"),
+            "suggest_additional_questions": payload.get("suggest_additional_questions"),
+            "suggest_rule_conflicts": payload.get("suggest_rule_conflicts"),
+            "comments": payload.get("comments"),
+            "payload": payload,  # JSONB
+        }
+
+        # Nettoyage : enlever les clés None pour éviter certains NOT NULL / policies strictes
+        return {k: v for k, v in row.items() if v is not None}
+
+    # ---------------------------
+    # Insert
+    # ---------------------------
+    def insert_review(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        endpoint = self._endpoint(self.table)
+        row = self._map_payload_to_row(payload)
+
         r = requests.post(
-            self._endpoint(),
+            endpoint,
             headers=self._headers(prefer="return=representation"),
             data=json.dumps(row, ensure_ascii=False),
             timeout=self.timeout,
         )
+
         if r.status_code >= 300:
             raise SupabaseError(f"Supabase insert failed: {r.status_code} | {r.text}")
+
         try:
             data = r.json()
         except Exception:
             data = {"raw": r.text}
+
         return {"status_code": r.status_code, "data": data}
 
-    def count(self, filters: Optional[List[Tuple[str, str, Any]]] = None) -> int:
-        """Count rows using Content-Range with Prefer: count=exact.
+    # ---------------------------
+    # Count (exact) with optional filter
+    # ---------------------------
+    def count_reviews(self, reviewer_role: Optional[str] = None) -> int:
+        endpoint = self._endpoint(self.table)
 
-        filters: list of (column, op, value) where op is one of: eq, ilike, in, is, gt, gte, lt, lte.
-        Example: [("reviewer_role","eq","Médecin généraliste")]
-        """
-        params: Dict[str, str] = {"select": "id", "limit": "1"}  # minimal payload
-        if filters:
-            for col, op, val in filters:
-                # PostgREST filter syntax: col=eq.value
-                if val is None:
-                    params[col] = "is.null"
-                elif op == "in":
-                    # val should be list/tuple
-                    vals = ",".join(str(x) for x in val)
-                    params[col] = f"in.({vals})"
-                else:
-                    params[col] = f"{op}.{val}"
+        params = {"select": "id"}
+        if reviewer_role:
+            params["reviewer_role"] = f"eq.{reviewer_role}"
+        # limit=1 uniquement pour réduire la charge; le count exact vient du header
+        params["limit"] = "1"
 
         r = requests.get(
-            self._endpoint(),
+            endpoint,
             headers=self._headers(prefer="count=exact"),
             params=params,
             timeout=self.timeout,
         )
         if r.status_code >= 300:
             raise SupabaseError(f"Supabase count failed: {r.status_code} | {r.text}")
-        cr = r.headers.get("content-range", "")  # e.g. '0-0/123'
+
+        # content-range: */0  ou 0-0/123
+        cr = r.headers.get("content-range", "")
         if "/" in cr:
-            try:
-                return int(cr.split("/")[-1])
-            except Exception:
-                return 0
+            return int(cr.split("/")[-1])
         return 0
 
-    def list(self, filters: Optional[List[Tuple[str, str, Any]]] = None, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
-        params: Dict[str, str] = {"select": "*", "limit": str(limit), "offset": str(offset), "order": "created_at.desc"}
-        if filters:
-            for col, op, val in filters:
-                if val is None:
-                    params[col] = "is.null"
-                elif op == "in":
-                    vals = ",".join(str(x) for x in val)
-                    params[col] = f"in.({vals})"
-                else:
-                    params[col] = f"{op}.{val}"
+    # ---------------------------
+    # Optional list
+    # ---------------------------
+    def list_reviews(self, reviewer_role: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
+        endpoint = self._endpoint(self.table)
+        params = {"select": "id,created_at,reviewer_role,chapter_id,entry_name,decision", "order": "created_at.desc", "limit": str(limit)}
+        if reviewer_role:
+            params["reviewer_role"] = f"eq.{reviewer_role}"
 
-        r = requests.get(self._endpoint(), headers=self._headers(), params=params, timeout=self.timeout)
+        r = requests.get(endpoint, headers=self._headers(), params=params, timeout=self.timeout)
         if r.status_code >= 300:
             raise SupabaseError(f"Supabase list failed: {r.status_code} | {r.text}")
         return r.json()

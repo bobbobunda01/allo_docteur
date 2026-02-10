@@ -13,6 +13,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 import streamlit as st
+import hashlib
 
 # Import Supabase storage (optional)
 SUPABASE_AVAILABLE = False
@@ -180,6 +181,17 @@ def summarize_rules(rules: Any) -> str:
         act = dec.get("action", "")
         out.append(f"- {rid} | priority={pr} | {pl} | action={act}")
     return "\n".join(out) if out else "—"
+
+
+
+def file_sha256(path: str) -> str:
+    p = Path(path)
+    h = hashlib.sha256()
+    with p.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
 
 
 @st.cache_resource
