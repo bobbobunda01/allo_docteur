@@ -1,0 +1,7 @@
+{
+  "reviewers": [
+    { "id": "dr_1", "name": "Médecin A", "role": "MG/urgences" },
+    { "id": "dr_2", "name": "Médecin B", "role": "Clinicien terrain" }
+  ],
+  "admin_ids": ["admin"]
+}

@@ -1,0 +1,1240 @@
+{
+  "generated_at": "2026-01-21T09:51:17.644543Z",
+  "kb": "kb_with_icd_full_CORRECTED.json",
+  "reviews_dir": "reviews",
+  "aggregate": [],
+  "no_review_items": [
+    {
+      "chapter_id": 1,
+      "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+      "entry_name": "Fièvre",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 1,
+      "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+      "entry_name": "Douleur",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 1,
+      "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+      "entry_name": "Déshydratation",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 1,
+      "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+      "entry_name": "Malnutrition aiguë sévère (MAS)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 1,
+      "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+      "entry_name": "État de choc",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 1,
+      "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+      "entry_name": "Crises généralisées tonico-cloniques / état de mal convulsif",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 1,
+      "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+      "entry_name": "Hypoglycémie",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Obstruction aiguë des voies aériennes supérieures",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Pneumonie (enfant < 5 ans)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Bronchiolite (enfant < 2 ans)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Asthme aigu (crise d'asthme)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Tuberculose pulmonaire",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Épiglottite",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Trachéite bactérienne",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Coqueluche",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Pneumonie (≥ 5 ans et adulte)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Rhinite / Rhinopharyngite",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Sinusite aiguë",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Angine (pharyngite) aiguë",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Otite externe / Otite moyenne aiguë",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Bronchite aiguë simple",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 1,
+      "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+      "entry_name": "Anémie",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Diarrhée aiguë",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Shigellose (diarrhée sanglante bactérienne)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Amibiase (dysenterie amibienne / abcès amibien du foie)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Reflux gastro-œsophagien",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Ulcères gastro-duodénaux (adulte)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Hémorragie digestive",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Troubles dyspeptiques",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Stomatite",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Candidose orale ou oropharyngée",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Herpès buccal (gingivo-stomatite herpétique / herpès labial)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Autres causes infectieuses (lésions buccales)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Stomatite du scorbut (carence en vitamine C)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Autres lésions d'origine carentielle (vitamines B/PP, fer...)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Affections de l'estomac et du duodénum",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Gale",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Poux (pédiculose)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Mycoses superficielles",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Infections cutanées bactériennes",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Impétigo",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Furoncle et anthrax staphylococcique",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Érysipèle et cellulite",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Charbon cutané",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Tréponématoses endémiques",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Lèpre",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Herpès cutané",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Zona",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Autres dermatoses",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Eczéma",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Dermatite séborrhéique",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Urticaire",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Pellagre",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Atteinte oculaire (orientation)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Conjonctivite",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Kératite",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Uvéite",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Traumatismes oculaires",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Brûlures oculaires",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Corps étranger oculaire",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Blépharite",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Orgelet / Chalazion",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Trachome",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Glaucome aigu",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Cataracte",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Suspicion d'infection bactérienne",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Méningite bactérienne",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Pneumonie bactérienne",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Tuberculose pulmonaire",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Fièvre typhoïde",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Choléra",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Tétanos",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Lèpre",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Suspicion d'infection virale",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Infections respiratoires virales (grippe et assimilées)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Rougeole",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Rubéole",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Oreillons",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Varicelle",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Zona (herpès zoster)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Herpès simplex (buccal ou génital)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Hépatites virales",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Fièvre virale hémorragique (Ebola/Marburg...)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Dengue",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Fièvre jaune",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Poliomyélite",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Rage",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Syndrome néphrotique (chez l'enfant)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Lithiase urinaire",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Cystite aiguë",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Pyélonéphrite aiguë",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Prostatite aiguë",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Écoulement urétral",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Écoulement vaginal anormal",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Ulcérations génitales",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Douleur abdominale basse chez la femme",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Infections génitales hautes (IGH)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Condylomes",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Saignements utérins anormaux (en dehors de la grossesse)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Principales infections génitales (résumé)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 10,
+      "chapter_label": "Chapitre 10 - Pathologie médico-chirurgicale",
+      "entry_name": "Morsures et piqûres venimeuses",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 10,
+      "chapter_label": "Chapitre 10 - Pathologie médico-chirurgicale",
+      "entry_name": "Infections dentaires",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 11,
+      "chapter_label": "Chapitre 11 - Troubles psychiques chez l’adulte",
+      "entry_name": "Insomnie",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 11,
+      "chapter_label": "Chapitre 11 - Troubles psychiques chez l’adulte",
+      "entry_name": "Agitation",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 11,
+      "chapter_label": "Chapitre 11 - Troubles psychiques chez l’adulte",
+      "entry_name": "État confusionnel",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 11,
+      "chapter_label": "Chapitre 11 - Troubles psychiques chez l’adulte",
+      "entry_name": "Anxiété",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 11,
+      "chapter_label": "Chapitre 11 - Troubles psychiques chez l’adulte",
+      "entry_name": "Syndromes post-traumatiques",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 11,
+      "chapter_label": "Chapitre 11 - Troubles psychiques chez l’adulte",
+      "entry_name": "Dépression",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 11,
+      "chapter_label": "Chapitre 11 - Troubles psychiques chez l’adulte",
+      "entry_name": "Troubles psychotiques",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 11,
+      "chapter_label": "Chapitre 11 - Troubles psychiques chez l’adulte",
+      "entry_name": "Épisode psychotique aigu",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 11,
+      "chapter_label": "Chapitre 11 - Troubles psychiques chez l’adulte",
+      "entry_name": "Psychoses chroniques",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 11,
+      "chapter_label": "Chapitre 11 - Troubles psychiques chez l’adulte",
+      "entry_name": "Troubles bipolaires",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Diphtérie",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Autres infections respiratoires hautes",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Laryngotrachéite et laryngotrachéobronchite (croup)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Otites",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Otite externe aiguë",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Otite moyenne aiguë (OMA)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Otite moyenne chronique suppurée (OMCS)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Bronchites",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Bronchite aiguë",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Bronchite chronique",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Bronchiolite",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Pneumonie aiguë",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Pneumonie chez l'enfant de moins de 5 ans",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Pneumonie chez l'enfant de plus de 5 ans et l'adulte",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Pneumonie traînante",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Staphylococcie pleuro-pulmonaire",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Asthme",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 2,
+      "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+      "entry_name": "Asthme chronique",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Shigellose",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Amibiase",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Herpès buccal",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Autres causes infectieuses",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 3,
+      "chapter_label": "Chapitre 3 - Pathologie digestive",
+      "entry_name": "Autres lésions d'origine carentielle",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Dermatologie",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 4,
+      "chapter_label": "Chapitre 4 - Pathologie dermatologique",
+      "entry_name": "Herpès et zona",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Xérophtalmie (carence en vitamine A)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Conjonctivite du nouveau-né",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Kérato-conjonctivite virale épidémique",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Cellulite périorbitaire et orbitaire",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Autres pathologies",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Onchocercose (cécité des rivière)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Loase",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 5,
+      "chapter_label": "Chapitre 5 - Pathologie ophtalmologique",
+      "entry_name": "Ptérygion",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Paludisme",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Trypanosomiase humaine africaine (maladie du sommeil)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Trypanosomiase américaine (maladie de Chagas)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Leishmanioses",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Protozooses intestinales (diarrhées parasitaires)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Distomatoses (douves)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Schistosomiases",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Cestodoses",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Nématodoses",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Filarioses",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Onchocercose (cécité des rivières)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Loase",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 6,
+      "chapter_label": "Chapitre 6 - Maladies parasitaires",
+      "entry_name": "Filarioses lymphatiques (FL)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Fièvres entériques (typhoïde et paratyphoïde)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Brucellose",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Peste",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Leptospirose",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Fièvres récurrentes (borrélioses)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Fièvre récurrente à poux (FRP)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Fièvres récurrentes à tiques (FRT)",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 7,
+      "chapter_label": "Chapitre 7 - Maladies bactériennes",
+      "entry_name": "Rickettsioses éruptives",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Fièvres hémorragiques virales",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 8,
+      "chapter_label": "Chapitre 8 - Maladies virales",
+      "entry_name": "Infection par le HIV et sida",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 9,
+      "chapter_label": "Chapitre 9 - Pathologie génito-urinaire",
+      "entry_name": "Infections génitales",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 10,
+      "chapter_label": "Chapitre 10 - Pathologie médico-chirurgicale",
+      "entry_name": "Pansements",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 10,
+      "chapter_label": "Chapitre 10 - Pathologie médico-chirurgicale",
+      "entry_name": "Traitement d'une plaie simple",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 10,
+      "chapter_label": "Chapitre 10 - Pathologie médico-chirurgicale",
+      "entry_name": "Brûlures",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 10,
+      "chapter_label": "Chapitre 10 - Pathologie médico-chirurgicale",
+      "entry_name": "Abcès cutané",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 10,
+      "chapter_label": "Chapitre 10 - Pathologie médico-chirurgicale",
+      "entry_name": "Pyomyosite",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 10,
+      "chapter_label": "Chapitre 10 - Pathologie médico-chirurgicale",
+      "entry_name": "Ulcère de jambe",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    },
+    {
+      "chapter_id": 10,
+      "chapter_label": "Chapitre 10 - Pathologie médico-chirurgicale",
+      "entry_name": "Infections nécrosantes de la peau et des tissus mous",
+      "kb_id": null,
+      "status": "NO_REVIEW"
+    }
+  ]
+}

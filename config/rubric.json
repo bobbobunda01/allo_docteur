@@ -1,0 +1,16 @@
+{
+  "kb_version": "v0.9",
+  "decisions": ["approve", "needs_change", "discuss"],
+  "priority_levels": ["P1", "P2", "P3", "P4"],
+  "criteria": [
+    "Priorité (P1–P4) appropriée",
+    "Action recommandée réaliste (RDC)",
+    "Questions de triage cohérentes",
+    "Red flags suffisants (si applicable)"
+  ],
+  "aggregation_policy": {
+    "two_reviewers_required": true,
+    "default_when_conflict": "discuss",
+    "prefer_safer_priority_on_conflict": true
+  }
+}

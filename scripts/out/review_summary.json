@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-01-21T09:51:17.646697Z",
+  "counts": {
+    "NO_REVIEW": 176
+  },
+  "conflicts_count": 0,
+  "needs_discussion_count": 0,
+  "missing_pair_count": 0,
+  "examples": {
+    "conflicts": [],
+    "needs_discussion": [],
+    "missing": [],
+    "no_review": [
+      {
+        "chapter_id": 1,
+        "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+        "entry_name": "Fièvre",
+        "kb_id": null,
+        "status": "NO_REVIEW"
+      },
+      {
+        "chapter_id": 1,
+        "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+        "entry_name": "Douleur",
+        "kb_id": null,
+        "status": "NO_REVIEW"
+      },
+      {
+        "chapter_id": 1,
+        "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+        "entry_name": "Déshydratation",
+        "kb_id": null,
+        "status": "NO_REVIEW"
+      },
+      {
+        "chapter_id": 1,
+        "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+        "entry_name": "Malnutrition aiguë sévère (MAS)",
+        "kb_id": null,
+        "status": "NO_REVIEW"
+      },
+      {
+        "chapter_id": 1,
+        "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+        "entry_name": "État de choc",
+        "kb_id": null,
+        "status": "NO_REVIEW"
+      },
+      {
+        "chapter_id": 1,
+        "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+        "entry_name": "Crises généralisées tonico-cloniques / état de mal convulsif",
+        "kb_id": null,
+        "status": "NO_REVIEW"
+      },
+      {
+        "chapter_id": 1,
+        "chapter_label": "Chapitre 1 - Quelques symptômes ou syndromes",
+        "entry_name": "Hypoglycémie",
+        "kb_id": null,
+        "status": "NO_REVIEW"
+      },
+      {
+        "chapter_id": 2,
+        "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+        "entry_name": "Obstruction aiguë des voies aériennes supérieures",
+        "kb_id": null,
+        "status": "NO_REVIEW"
+      },
+      {
+        "chapter_id": 2,
+        "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+        "entry_name": "Pneumonie (enfant < 5 ans)",
+        "kb_id": null,
+        "status": "NO_REVIEW"
+      },
+      {
+        "chapter_id": 2,
+        "chapter_label": "Chapitre 2 - Pathologie respiratoire",
+        "entry_name": "Bronchiolite (enfant < 2 ans)",
+        "kb_id": null,
+        "status": "NO_REVIEW"
+      }
+    ]
+  }
+}
