@@ -11,7 +11,7 @@ from pathlib import Path
 from datetime import datetime
 import streamlit as st
 
-from storage_supabase import SupabaseConfig, SupabaseStorage, SupabaseError
+from storage.storage_supabase import SupabaseConfig, SupabaseStorage, SupabaseError
 
 # ---------------------------
 # Configuration
