@@ -1,141 +1,119 @@
 # storage_supabase.py
-import json
+# Minimal Supabase (PostgREST) client for Allo Docteur KB reviews
+# - insert_review
+# - count_reviews (optionally filtered by reviewer_role)
+# - list_reviews (optional)
+#
+# Uses REST endpoint: {SUPABASE_URL}/rest/v1/{table}
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
+
 import requests
-from typing import Optional, Dict, Any, List
 
 
-class SupabaseError(Exception):
-    pass
+class SupabaseError(RuntimeError):
+    """Raised when Supabase REST operations fail."""
+
+
+@dataclass
+class SupabaseConfig:
+    url: str
+    anon_key: str
+    table: str = "reviews"
+    schema: str = "public"
+    timeout_s: int = 30
+
+    @property
+    def rest_base(self) -> str:
+        return self.url.rstrip("/") + "/rest/v1"
+
+    def headers(self) -> Dict[str, str]:
+        # PostgREST expects both apikey and Authorization
+        return {
+            "apikey": self.anon_key,
+            "Authorization": f"Bearer {self.anon_key}",
+            "Content-Type": "application/json",
+            # Ensure schema is correctly targeted
+            "Accept-Profile": self.schema,
+            "Content-Profile": self.schema,
+        }
 
 
 class SupabaseStorage:
-    """
-    Stockage Supabase (PostgREST):
-    - insert_review(payload) : mappe le payload Streamlit vers la table 'reviews'
-    - count_reviews(reviewer_role=...) : count exact (filtrable)
-    - list_reviews(reviewer_role=..., limit=...) : optionnel
-    """
+    def __init__(self, config: SupabaseConfig):
+        self.config = config
 
-    def __init__(
-        self,
-        supabase_url: str,
-        supabase_anon_key: str,
-        table: str = "reviews",
-        timeout: int = 30,
-    ):
-        self.url = supabase_url.rstrip("/")
-        self.key = supabase_anon_key
-        self.table = table
-        self.timeout = timeout
+    @staticmethod
+    def is_configured(url: Optional[str], key: Optional[str]) -> bool:
+        return bool(url and key and str(url).startswith("http"))
 
-    def _headers(self, prefer: Optional[str] = None) -> Dict[str, str]:
-        h = {
-            "apikey": self.key,
-            "Authorization": f"Bearer {self.key}",
-            "Content-Type": "application/json",
-        }
-        if prefer:
-            h["Prefer"] = prefer
-        return h
+    def _url(self, path: str) -> str:
+        return f"{self.config.rest_base}/{path.lstrip('/')}"
 
-    def _endpoint(self, path: str) -> str:
-        return f"{self.url}/rest/v1/{path.lstrip('/')}"
-
-    # ---------------------------
-    # Mapping payload -> row DB
-    # ---------------------------
-    def _map_payload_to_row(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+    def insert_review(self, row: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Ta table Supabase a les colonnes :
-        id, created_at, kb_version, kb_hash, reviewer_role, reviewer_name, reviewer_email,
-        chapter_id, chapter_label, entry_name, entry_type, kb_id, decision, suggested_priority,
-        suggest_additional_questions, suggest_rule_conflicts, comments, payload
+        Insert a row into the reviews table.
+        IMPORTANT: Row keys must match your table columns.
         """
+        endpoint = self._url(self.config.table)
+        # Return inserted row(s)
+        headers = {**self.config.headers(), "Prefer": "return=representation"}
+        r = requests.post(endpoint, headers=headers, json=row, timeout=self.config.timeout_s)
+        if r.status_code >= 400:
+            raise SupabaseError(f"insert failed ({r.status_code}): {r.text}")
+        data = r.json()
+        if isinstance(data, list) and data:
+            return data[0]
+        return {"result": data}
 
-        # On garde le payload brut complet en JSONB dans la colonne "payload"
-        row = {
-            "kb_version": payload.get("kb_version") or "v1",
-            "kb_hash": payload.get("kb_hash") or payload.get("kb_sha256") or "unknown",
-            "reviewer_role": payload.get("role"),  # role -> reviewer_role
-            "reviewer_name": payload.get("reviewer_name"),
-            "reviewer_email": payload.get("reviewer_email"),
-            "chapter_id": payload.get("chapter_id"),
-            "chapter_label": payload.get("chapter_label"),
-            "entry_name": payload.get("entry_name"),
-            "entry_type": payload.get("entry_type"),
-            "kb_id": payload.get("kb_id"),
-            "decision": payload.get("decision"),
-            "suggested_priority": payload.get("suggested_priority"),
-            "suggest_additional_questions": payload.get("suggest_additional_questions"),
-            "suggest_rule_conflicts": payload.get("suggest_rule_conflicts"),
-            "comments": payload.get("comments"),
-            "payload": payload,  # JSONB
-        }
-
-        # Nettoyage : enlever les clés None pour éviter certains NOT NULL / policies strictes
-        return {k: v for k, v in row.items() if v is not None}
-
-    # ---------------------------
-    # Insert
-    # ---------------------------
-    def insert_review(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        endpoint = self._endpoint(self.table)
-        row = self._map_payload_to_row(payload)
-
-        r = requests.post(
-            endpoint,
-            headers=self._headers(prefer="return=representation"),
-            data=json.dumps(row, ensure_ascii=False),
-            timeout=self.timeout,
-        )
-
-        if r.status_code >= 300:
-            raise SupabaseError(f"Supabase insert failed: {r.status_code} | {r.text}")
-
-        try:
-            data = r.json()
-        except Exception:
-            data = {"raw": r.text}
-
-        return {"status_code": r.status_code, "data": data}
-
-    # ---------------------------
-    # Count (exact) with optional filter
-    # ---------------------------
     def count_reviews(self, reviewer_role: Optional[str] = None) -> int:
-        endpoint = self._endpoint(self.table)
-
-        params = {"select": "id"}
+        """
+        Count rows. If reviewer_role provided, count only that role.
+        Uses Content-Range with Prefer: count=exact
+        """
+        q = f"{self.config.table}?select=id&limit=1"
         if reviewer_role:
-            params["reviewer_role"] = f"eq.{reviewer_role}"
-        # limit=1 uniquement pour réduire la charge; le count exact vient du header
-        params["limit"] = "1"
+            # exact match, URL encoded by requests
+            q += f"&reviewer_role=eq.{reviewer_role}"
 
-        r = requests.get(
-            endpoint,
-            headers=self._headers(prefer="count=exact"),
-            params=params,
-            timeout=self.timeout,
-        )
-        if r.status_code >= 300:
-            raise SupabaseError(f"Supabase count failed: {r.status_code} | {r.text}")
+        endpoint = self._url(q)
+        headers = {**self.config.headers(), "Prefer": "count=exact"}
+        r = requests.get(endpoint, headers=headers, timeout=self.config.timeout_s)
+        if r.status_code >= 400:
+            raise SupabaseError(f"count failed ({r.status_code}): {r.text}")
 
-        # content-range: */0  ou 0-0/123
-        cr = r.headers.get("content-range", "")
+        # Content-Range format: 0-0/123 or */0
+        cr = r.headers.get("content-range") or r.headers.get("Content-Range") or ""
         if "/" in cr:
-            return int(cr.split("/")[-1])
-        return 0
+            try:
+                total = int(cr.split("/")[-1])
+                return total
+            except Exception:
+                pass
 
-    # ---------------------------
-    # Optional list
-    # ---------------------------
-    def list_reviews(self, reviewer_role: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
-        endpoint = self._endpoint(self.table)
-        params = {"select": "id,created_at,reviewer_role,chapter_id,entry_name,decision", "order": "created_at.desc", "limit": str(limit)}
+        # Fallback: length of returned array (not exact)
+        data = r.json()
+        return len(data) if isinstance(data, list) else 0
+
+    def list_reviews(
+        self,
+        reviewer_role: Optional[str] = None,
+        limit: int = 50,
+        offset: int = 0,
+        order_by_created_at_desc: bool = True,
+    ) -> List[Dict[str, Any]]:
+        q = f"{self.config.table}?select=*&limit={int(limit)}&offset={int(offset)}"
         if reviewer_role:
-            params["reviewer_role"] = f"eq.{reviewer_role}"
+            q += f"&reviewer_role=eq.{reviewer_role}"
+        if order_by_created_at_desc:
+            q += "&order=created_at.desc"
 
-        r = requests.get(endpoint, headers=self._headers(), params=params, timeout=self.timeout)
-        if r.status_code >= 300:
-            raise SupabaseError(f"Supabase list failed: {r.status_code} | {r.text}")
-        return r.json()
+        endpoint = self._url(q)
+        r = requests.get(endpoint, headers=self.config.headers(), timeout=self.config.timeout_s)
+        if r.status_code >= 400:
+            raise SupabaseError(f"list failed ({r.status_code}): {r.text}")
+        data = r.json()
+        return data if isinstance(data, list) else []
