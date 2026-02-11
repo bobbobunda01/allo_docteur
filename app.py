@@ -1,33 +1,22 @@
 # app.py — Allo Docteur KB Validation (Streamlit)
-# Validation coordonnée du KB (médecin généraliste + urgentiste)
-# Stockage: Supabase (si configuré) + fallback local JSONL
-# Navigation propre (chapitres sans doublons), sélection par entry_name,
-# affichage symptômes + population, priorités P1..P4 expliquées.
-
-from __future__ import annotations
+# Objectif: Validation coordonnée du KB (médecin généraliste + urgentiste),
+# navigation propre (chapitres sans doublons), sélection par entry_name,
+# affichage des symptômes, priorités P1..P4 expliquées, export des avis en JSONL.
 
 import json
 import re
 from pathlib import Path
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
-import pandas as pd
 import streamlit as st
-import hashlib
-
-# Import Supabase storage (optional)
-SUPABASE_AVAILABLE = False
-try:
-    # expected repo structure: storage/storage_supabase.py
-    from storage.storage_supabase import SupabaseConfig, SupabaseStorage, SupabaseError  # type: ignore
-    SUPABASE_AVAILABLE = True
-except Exception:
-    SUPABASE_AVAILABLE = False
-
-
+import os
+from typing import Optional
+from storage.storage_supabase import SupabaseStorage
+#from storage.storage_supabase import SupabaseConfig, SupabaseStorage, SupabaseError
 # ---------------------------
 # Configuration
 # ---------------------------
+
+##efefefefzfzefz
 st.set_page_config(
     page_title="Allo Docteur — Validation KB (MSF + ICD)",
     layout="wide",
@@ -66,8 +55,12 @@ ROLE_URGENTISTE = "Urgentiste"
 # ---------------------------
 # Helpers
 # ---------------------------
-def normalize_chapter(chapter_raw: str) -> Tuple[Optional[int], Optional[str]]:
-    """Retourne (chap_id, chap_label) ou (None, None)."""
+def normalize_chapter(chapter_raw: str):
+    """
+    Retourne:
+    - chap_id: int (ex 2)
+    - chap_label: str (ex 'Chapitre 2 - Pathologie respiratoire')
+    """
     if not chapter_raw or not isinstance(chapter_raw, str):
         return None, None
 
@@ -77,11 +70,11 @@ def normalize_chapter(chapter_raw: str) -> Tuple[Optional[int], Optional[str]]:
 
     chap_id = int(m.group(1))
     title = CHAPTER_TITLES.get(chap_id, "")
-    chap_label = f"Chapitre {chap_id} - {title}" if title else f"Chapitre {chap_id}"
+    chap_label = f"Chapitre {chap_id} — {title}" if title else f"Chapitre {chap_id}"
     return chap_id, chap_label
 
 
-def load_kb(path: str) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+def load_kb(path: str):
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"KB introuvable: {p.resolve()}")
@@ -101,47 +94,66 @@ def load_kb(path: str) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
         return kb, {}
 
     if isinstance(kb, dict):
-        flat: List[Dict[str, Any]] = []
-        meta: Dict[str, Any] = {}
-        for _, v in kb.items():
+        # try flatten dict-of-lists
+        flat = []
+        meta = {}
+        for k, v in kb.items():
             if isinstance(v, list) and v and isinstance(v[0], dict) and "entry_name" in v[0]:
                 flat.extend(v)
             else:
-                # ignore meta-like keys silently
-                pass
+                meta[k] = v
         if flat:
             return flat, meta
 
     raise ValueError("Structure KB non reconnue (attendu list ou dict avec items).")
 
 
-def safe_list(x: Any) -> List[Any]:
+def safe_list(x):
     return x if isinstance(x, list) else []
 
 
-def normalize_entry_name(name: Any) -> str:
+def unique_sorted(seq):
+    seen = set()
+    out = []
+    for x in seq:
+        if x not in seen:
+            seen.add(x)
+            out.append(x)
+    return sorted(out)
+
+
+def normalize_entry_name(name):
     if not isinstance(name, str):
         return ""
     return re.sub(r"\s+", " ", name).strip()
 
 
-def build_chapter_index(items: List[Dict[str, Any]]):
-    chapters_map: Dict[int, str] = {}
-    by_chapter: Dict[int, List[Dict[str, Any]]] = {}
+def build_chapter_index(items):
+    """
+    Construit:
+    - chapters_map: {chap_id: label}
+    - by_chapter: {chap_id: [items...]}
+    """
+    chapters_map = {}
+    by_chapter = {}
 
     for it in items:
         chap_id, chap_label = normalize_chapter(it.get("chapter", ""))
-        if chap_id is None or chap_label is None:
+        if chap_id is None:
             continue
+
         chapters_map[chap_id] = chap_label
         by_chapter.setdefault(chap_id, []).append(it)
 
     return chapters_map, by_chapter
 
 
-def build_entry_index(items_for_chapter: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
-    """entry_name -> item (si doublon, garde le premier)."""
-    idx: Dict[str, Dict[str, Any]] = {}
+def build_entry_index(items_for_chapter):
+    """
+    Retourne mapping entry_name -> item
+    - Si doublon entry_name dans un chapitre: on garde le premier (logique stable)
+    """
+    idx = {}
     for it in items_for_chapter:
         nm = normalize_entry_name(it.get("entry_name", ""))
         if not nm:
@@ -151,25 +163,55 @@ def build_entry_index(items_for_chapter: List[Dict[str, Any]]) -> Dict[str, Dict
     return idx
 
 
-def review_file_for_role(role: str) -> Path:
+def review_file_for_role(role: str):
     slug = "generaliste" if role == ROLE_GENERALISTE else "urgentiste"
     return REVIEWS_DIR / f"reviews_{slug}.jsonl"
 
 
-def append_review_local(role: str, payload: Dict[str, Any]) -> None:
+def append_review(role: str, payload: dict):
+    mode = get_storage_mode()
+    if mode == "db":
+        try:
+            db = get_supabase_storage()
+            db.insert_review(payload)
+            return
+        except Exception as e:
+            # fallback explicite (ne pas perdre l'avis)
+            st.warning(f"Échec insertion DB, fallback en fichier local. Détail: {e}")
+
+    # LOCAL fallback (dev)
     f = review_file_for_role(role)
     with f.open("a", encoding="utf-8") as w:
         w.write(json.dumps(payload, ensure_ascii=False) + "\n")
 
 
-def count_reviews_local(role: str) -> int:
+def count_reviews(role: str) -> int:
+    """Compte les avis enregistrés pour un rôle.
+
+    - En mode 'db': compte dans Supabase (si SELECT autorisé par RLS / policies)
+    - En mode 'local': compte les lignes JSONL locales
+    """
+    mode = get_storage_mode()
+    if mode == "db":
+        try:
+            db = get_supabase_storage()
+            return db.count_reviews(reviewer_role=role)
+        except Exception as e:
+            # Si les policies bloquent SELECT, on ne casse pas l'app; on affiche 0 + warning.
+            st.warning(f"Count DB impossible (vérifie RLS/policies SELECT): {e}")
+            return 0
+        except Exception as e:
+            st.warning(f"Count DB erreur: {e}")
+            return 0
+
+    # LOCAL
     f = review_file_for_role(role)
     if not f.exists():
         return 0
     return sum(1 for _ in f.open("r", encoding="utf-8"))
 
 
-def summarize_rules(rules: Any) -> str:
+def summarize_rules(rules):
     out = []
     for r in safe_list(rules):
         if not isinstance(r, dict):
@@ -182,100 +224,66 @@ def summarize_rules(rules: Any) -> str:
         out.append(f"- {rid} | priority={pr} | {pl} | action={act}")
     return "\n".join(out) if out else "—"
 
-
-
-def file_sha256(path: str) -> str:
-    p = Path(path)
-    h = hashlib.sha256()
-    with p.open("rb") as f:
-        for chunk in iter(lambda: f.read(1024 * 1024), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
-
-@st.cache_resource
-def get_supabase_storage() -> Optional["SupabaseStorage"]:
-    if not SUPABASE_AVAILABLE:
-        return None
-
+def get_storage_mode() -> str:
+    # priorité: secrets streamlit > env > default local
     try:
-        url = st.secrets.get("SUPABASE_URL", "").strip()
-        key = st.secrets.get("SUPABASE_ANON_KEY", "").strip()
-        table = st.secrets.get("SUPABASE_TABLE", "reviews").strip() or "reviews"
+        return st.secrets.get("STORAGE_MODE", os.environ.get("STORAGE_MODE", "local"))
     except Exception:
-        return None
+        return os.environ.get("STORAGE_MODE", "local") or "local"
+
+
+def get_supabase_storage() -> SupabaseStorage:
+    """Initialise le client Supabase (REST) à partir des secrets/env.
+
+    Requis:
+      - SUPABASE_URL
+      - SUPABASE_KEY (Anon key)  [ou SUPABASE_ANON_KEY]
+    Optionnel:
+      - SUPABASE_TABLE (défaut: reviews)
+    """
+    try:
+        url = st.secrets.get("SUPABASE_URL") or os.environ.get("SUPABASE_URL")
+        key = (
+            st.secrets.get("SUPABASE_KEY")
+            or st.secrets.get("SUPABASE_ANON_KEY")
+            or os.environ.get("SUPABASE_KEY")
+            or os.environ.get("SUPABASE_ANON_KEY")
+        )
+        table = st.secrets.get("SUPABASE_TABLE") or os.environ.get("SUPABASE_TABLE") or "reviews"
+    except Exception:
+        url = os.environ.get("SUPABASE_URL")
+        key = os.environ.get("SUPABASE_KEY") or os.environ.get("SUPABASE_ANON_KEY")
+        table = os.environ.get("SUPABASE_TABLE") or "reviews"
 
     if not url or not key:
-        return None
+        raise RuntimeError("Supabase non configuré: renseigne SUPABASE_URL et SUPABASE_KEY (Anon key) dans secrets/env.")
 
-    cfg = SupabaseConfig(url=url, anon_key=key, table=table, timeout=30)
-    return SupabaseStorage(cfg)
-
-
-def db_enabled() -> bool:
-    return get_supabase_storage() is not None
+    return SupabaseStorage(SupabaseConfig(url=url, anon_key=key, table=table))
 
 
-def append_review(role: str, payload: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
-    """Write to Supabase (if configured) AND always write to local JSONL as backup.
 
-    Returns (db_ok, db_error_message)
-    """
-    # Always keep local backup
-    append_review_local(role, payload)
-
-    store = get_supabase_storage()
-    if not store:
-        return False, "Supabase non configuré (fallback local uniquement)."
-
-    # Map columns expected by Supabase table (avoid surprises)
-    row = dict(payload)
-    row["reviewer_role"] = payload.get("role")
-    row["created_at"] = payload.get("ts")
-
+def allow_db_select() -> bool:
+    # permet d'éviter des erreurs si tu es en RLS INSERT-only
     try:
-        store.insert(row)
-        return True, None
-    except SupabaseError as e:
-        return False, str(e)
-    except Exception as e:
-        return False, str(e)
-
-
-def count_reviews(role: str) -> int:
-    store = get_supabase_storage()
-    if not store:
-        return count_reviews_local(role)
-
-    try:
-        return store.count(filters=[("reviewer_role", "eq", role)])
+        v = st.secrets.get("ALLOW_DB_SELECT", "false")
     except Exception:
-        # fallback local if DB count fails
-        return count_reviews_local(role)
+        v = os.environ.get("ALLOW_DB_SELECT", "false")
+    return str(v).strip().lower() in ("1", "true", "yes", "y")
 
-############zfezfrezrfefrezrezrfzerfezrez
+
 # ---------------------------
 # UI
 # ---------------------------
 st.title("Allo Docteur — Validation KB (MSF + ICD)")
 st.caption("Module de revue clinique: navigation par chapitre et entrée, validation par 2 profils médecins, export des avis en JSONL.")
 
-with st.sidebar:
+with st.sidebar:    
     st.header("Chargement KB")
     kb_path = st.text_input("Chemin du fichier KB (JSON)", value=DEFAULT_KB_PATH)
 
     st.divider()
     st.header("Rôle du validateur")
     role = st.radio("Sélection du profil", [ROLE_GENERALISTE, ROLE_URGENTISTE])
-
-    st.divider()
-    st.header("Stockage")
-    if db_enabled():
-        st.success("Supabase: ACTIVÉ ✅")
-        st.caption(f"Table: `{st.secrets.get('SUPABASE_TABLE','reviews')}`")
-    else:
-        st.warning("Supabase: non configuré (stockage local JSONL).")
 
     st.divider()
     st.header("Priorités (rappel)")
@@ -285,21 +293,22 @@ with st.sidebar:
 
 # Load KB
 try:
-    items, _meta = load_kb(kb_path)
+    items, meta = load_kb(kb_path)
 except Exception as e:
     st.error(f"Impossible de charger le KB: {e}")
     st.stop()
 
-# ignore empty entry_name at UI level
+# Clean minor UI noise: ignore empty entry_name at UI level as well
 items = [it for it in items if normalize_entry_name(it.get("entry_name", ""))]
 
 chapters_map, by_chapter = build_chapter_index(items)
-chapter_options = [(cid, chapters_map[cid]) for cid in sorted(chapters_map.keys())]
+chapter_options = [(cid, chapters_map[cid]) for cid in sorted(chapters_map.keys()) if chapters_map.get(cid)]
 
 if not chapter_options:
     st.error("Aucun chapitre détecté dans le KB (champ 'chapter').")
     st.stop()
 
+# Main layout
 col_nav, col_view = st.columns([0.35, 0.65], gap="large")
 
 with col_nav:
@@ -317,6 +326,7 @@ with col_nav:
     entry_names = sorted(entry_idx.keys())
 
     st.caption(f"Entrées disponibles: **{len(entry_names)}**")
+
     if not entry_names:
         st.warning("Aucune entrée trouvée pour ce chapitre.")
         st.stop()
@@ -328,6 +338,7 @@ with col_nav:
     st.subheader("Statut validation")
     st.write(f"📌 Avis déjà enregistrés ({role}) : **{count_reviews(role)}**")
 
+
 with col_view:
     st.subheader("Vue KB")
     c1, c2 = st.columns([0.6, 0.4], gap="large")
@@ -336,15 +347,22 @@ with col_view:
         st.markdown(f"### {selected_item.get('entry_name','(sans nom)')}")
         st.write(f"**Chapitre:** {chapters_map.get(selected_chap_id, f'Chapitre {selected_chap_id}')}")
         st.write(f"**Type:** {selected_item.get('entry_type','—')}")
-        st.write(f"**Population:** {', '.join(safe_list(selected_item.get('population'))) or '—'}")
+        
+        # ✅ AJOUT ICI
+        pop = safe_list(selected_item.get("population"))
+        pop_txt = ", ".join(pop) if pop else "—"  
+        st.write(f"**Population:** {pop_txt}")
+            
+        st.write(f"**Niveau clinique:** {selected_item.get('clinical_level','—')}  |  **Granularité:** {selected_item.get('granularity_tag','—')}")
 
         ti = selected_item.get("triage_intent", {}) if isinstance(selected_item.get("triage_intent"), dict) else {}
-        dp = ti.get("default_priority", "—") or "—"
-        isp = ti.get("if_severity_priority", "—") or "—"
-        st.write("**Priorité suggérée (KB):**", dp)
-        st.write("**Priorité si gravité (KB):**", isp)
+        dp = ti.get("default_priority", "—")
+        isp = ti.get("if_severity_priority", "—")
+        st.write("**Priorité suggérée (KB):**", dp if dp else "—")
+        st.write("**Priorité si gravité (KB):**", isp if isp else "—")
 
-        st.markdown("#### Symptômes")
+        # Symptoms display (as requested)
+        st.markdown("#### Symptômes (extraits du KB)")
         symptoms = safe_list(selected_item.get("symptoms"))
         if symptoms:
             st.write("\n".join([f"- {s}" for s in symptoms]))
@@ -353,11 +371,15 @@ with col_view:
 
         st.markdown("#### Signes de gravité (severity_signs)")
         sev = safe_list(selected_item.get("severity_signs"))
-        st.write("\n".join([f"- {s}" for s in sev]) if sev else "—")
+        if sev:
+            st.write("\n".join([f"- {s}" for s in sev]))
+        else:
+            st.write("—")
 
         st.markdown("#### Red flags")
         rfs = safe_list(selected_item.get("red_flags"))
         if rfs:
+            # accept list[str] or list[dict]
             lines = []
             for rf in rfs:
                 if isinstance(rf, str):
@@ -369,9 +391,13 @@ with col_view:
             st.write("—")
 
     with c2:
-        st.markdown("#### Champs d'admission (CA)")
+        st.markdown("#### Champs d'admission")
         intake_fields = safe_list(selected_item.get("intake_fields"))
-        st.code("\n".join(intake_fields) if intake_fields else "—")
+        if intake_fields:
+            # Affichage compact (s'adapte à la largeur, évite un gros bloc code)
+            st.markdown(", ".join([f"`{f}`" for f in intake_fields]))
+        else:
+            st.write("—")
 
         st.markdown("#### Questions de triage (triage_questions)")
         tq = safe_list(selected_item.get("triage_questions"))
@@ -389,13 +415,18 @@ with col_view:
         st.markdown("#### Règles (rules)")
         st.code(summarize_rules(selected_item.get("rules")), language="text")
 
-        #st.markdown("#### Mapping ICD (si présent)")
-        #icd_block = selected_item.get("icd_mapping") or selected_item.get("icd") or selected_item.get("icd_matches")
-        #st.json(icd_block, expanded=False) if icd_block else st.write("—")
+        # ICD mapping if present
+        st.markdown("#### Mapping ICD (si présent)")
+        icd_block = selected_item.get("icd_mapping") or selected_item.get("icd") or selected_item.get("icd_matches")
+        if icd_block:
+            st.json(icd_block, expanded=False)
+        else:
+            st.write("—")
 
     st.divider()
     st.subheader("Formulaire de validation (médecin)")
 
+    # Validation form (role-specific)
     with st.form(key=f"review_form_{role}_{selected_chap_id}_{selected_entry_name}"):
         st.markdown(f"**Validateur:** {role}")
 
@@ -410,6 +441,7 @@ with col_view:
             options=["(laisser tel quel)", "P1", "P2", "P3", "P4"],
         )
 
+        # Controlled suggestions without changing KB in-place
         suggest_additional_questions = st.text_area(
             "Questions supplémentaires proposées (optionnel)",
             placeholder="Ex: durée des symptômes, notion d'aggravation, grossesse, immunodépression, etc.",
@@ -437,6 +469,7 @@ with col_view:
                 payload = {
                     "ts": datetime.utcnow().isoformat() + "Z",
                     "role": role,
+                    "reviewer_role": role,
                     "chapter_id": selected_chap_id,
                     "chapter_label": chapters_map.get(selected_chap_id),
                     "entry_name": selected_item.get("entry_name"),
@@ -446,22 +479,17 @@ with col_view:
                     "suggest_additional_questions": suggest_additional_questions.strip() or None,
                     "suggest_rule_conflicts": suggest_rule_conflicts.strip() or None,
                     "comments": comments.strip() or None,
+                    # pointer stable vers l’item (si présent)
                     "kb_id": selected_item.get("id") or selected_item.get("kb_id") or None,
                 }
+                append_review(role, payload)
+                st.success("Avis enregistré avec succès ✅")
 
-                db_ok, db_err = append_review(role, payload)
-
-                st.success("Avis enregistré ✅ (backup local JSONL toujours écrit)")
-                st.info(f"Fichier avis local: {review_file_for_role(role).resolve()}")
-
-                if db_ok:
-                    st.success("Enregistré dans Supabase ✅")
-                else:
-                    st.warning(f"Supabase non écrit: {db_err}")
+                st.info(f"Fichier avis: {review_file_for_role(role).resolve()}")
 
 # Footer
 st.divider()
 st.caption(
-    "⚠️ Important: cette application sert à la validation du KB de triage (orientation/priorisation), "
+    "⚠️ Important: Cette application sert à la **validation du KB de triage** (orientation/priorisation), "
     "pas à produire un diagnostic. Les règles et contenus doivent être validés par des médecins avant usage en production."
 )
