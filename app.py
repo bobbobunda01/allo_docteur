@@ -369,7 +369,7 @@ with col_view:
             st.write("—")
 
     with c2:
-        st.markdown("#### Champs d'admission")
+        st.markdown("#### Champs d'admission (CA)")
         intake_fields = safe_list(selected_item.get("intake_fields"))
         st.code("\n".join(intake_fields) if intake_fields else "—")
 
