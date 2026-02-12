@@ -384,18 +384,20 @@ with col_view:
             st.write("—")
 
     with c2:
-        st.markdown("#### Champs d'admission ")
-
+        st.markdown("#### Champs d'admission")
         intake_fields = safe_list(selected_item.get("intake_fields"))
-        if intake_fields:
-            # UI improvement: compact display (chips) instead of a huge code block
-            with st.expander("Voir la liste des champs", expanded=True):
-                # Show as multi-column bullet list
-                cols = st.columns(2)
-                half = (len(intake_fields) + 1) // 2
-                left, right = intake_fields[:half], intake_fields[half:]
-                cols[0].write("\n".join([f"- `{x}`" for x in left]) if left else "")
-                cols[1].write("\n".join([f"- `{x}`" for x in right]) if right else "")
+        st.code("\n".join(intake_fields) if intake_fields else "—")
+
+        st.markdown("#### Questions de triage (triage_questions)")
+        tq = safe_list(selected_item.get("triage_questions"))
+        if tq:
+            lines = []
+            for q in tq:
+                if isinstance(q, dict):
+                    lines.append(f"- {q.get('id','Q')} — {q.get('label','')}".strip())
+                else:
+                    lines.append(f"- {q}")
+            st.write("\n".join(lines))
         else:
             st.write("—")
 
